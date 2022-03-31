@@ -1,6 +1,8 @@
 #SET UP ACOUNT FIRST
 gcloud auth list
 gcloud config list project
+-------------------------------------------------------------------------
+
 
 #TASK 1 : Download the monolith code and build your container
 #First of all, you need to clone the project repository from GitHub to your Cloud Shell environment.
@@ -15,58 +17,68 @@ npm start
 
 #Name your artifact as follows:
 #GCR Repo: gcr.io/${GOOGLE_CLOUD_PROJECT}
-#Image name: Monolith Identifier
+#Image name: Monolith Identifier (SEE UR GCP !!)
 #Image version: 1.0.0
 gcloud services enable cloudbuild.googleapis.com
-gcloud builds submit --tag gcr.io/${GOOGLE_CLOUD_PROJECT}/fancy-monolith-174:1.0.0 .
+gcloud builds submit --tag gcr.io/${GOOGLE_CLOUD_PROJECT}/<MONOLITH IDENTIFIER>:1.0.0 .
+----------------------------------------------------------------------------------------
+
 
 #Task 2: Create a kubernetes cluster and deploy the application
 Make sure that you:
 
 #create the resources in the us-central1-a zone, and
-#the cluster is named Cluster Name
+#the cluster is named Cluster Name (SEEE UR GCP !!) 
 #Node Count : 3
 
 gcloud config set compute/zone us-central1-a
 gcloud services enable container.googleapis.com
-gcloud container clusters create fancy-production-902 --num-nodes 3
+gcloud container clusters create <CLUSTER NAME> --num-nodes 3
 
 
-kubectl create deployment fancy-monolith-174 --image=gcr.io/${GOOGLE_CLOUD_PROJECT}/fancy-monolith-174:1.0.0
-kubectl expose deployment fancy-monolith-174 --type=LoadBalancer --port 80 --target-port 8080
+kubectl create deployment <MONOLITH IDENTIFIER> --image=gcr.io/${GOOGLE_CLOUD_PROJECT}/<MONOLITH IDENTIFIER>:1.0.0
+kubectl expose deployment <MONOLITH IDENTIFIER> --type=LoadBalancer --port 80 --target-port 8080
+----------------------------------------------------------------------------------------------------
+
 
 #Task 3: Create a containerized version of your Microservices
 Make sure that you:
 
-#submit a build named “orders” with a version of “1.0.0”, and
-#submit a build named “products” with a version of “1.
+#submit a build named “ORDERS IDENTIFIER” with a version of “1.0.0”, and
+#submit a build named “PRODUCTS IDENTIFIER” with a version of “1.
 
 cd ~/monolith-to-microservices/microservices/src/orders
-gcloud builds submit --tag gcr.io/${GOOGLE_CLOUD_PROJECT}/Orders Identifier:1.0.0 .
+gcloud builds submit --tag gcr.io/${GOOGLE_CLOUD_PROJECT}/<Orders Identifier>:1.0.0 .
 
 cd ~/monolith-to-microservices/microservices/src/products
-gcloud builds submit --tag gcr.io/${GOOGLE_CLOUD_PROJECT}/Products Identifier:1.0.0 .
+gcloud builds submit --tag gcr.io/${GOOGLE_CLOUD_PROJECT}/<Products Identifier>:1.0.0 .
+--------------------------------------------------------------------------------------------
+
 
 #Task 4 : Deploy the new microservices
-kubectl create deployment fancy-orders-668 --image=gcr.io/${GOOGLE_CLOUD_PROJECT}/fancy-orders-668:1.0.0
-kubectl expose deployment fancy-orders-668 --type=LoadBalancer --port 80 --target-port 8081
+kubectl create deployment <ORDERS IDENTIFIER> --image=gcr.io/${GOOGLE_CLOUD_PROJECT}/<ORDERS IDENTIFIER>:1.0.0
+kubectl expose deployment <ORDERS IDENTIFIER> --type=LoadBalancer --port 80 --target-port 8081
 
-kubectl create deployment fancy-products-310 --image=gcr.io/${GOOGLE_CLOUD_PROJECT}/fancy-products-310:1.0.0
-kubectl expose deployment fancy-products-310 --type=LoadBalancer --port 80 --target-port 8082
+kubectl create deployment <PRODUCTS IDENTIFIER> --image=gcr.io/${GOOGLE_CLOUD_PROJECT}/<PRODUCTS IDENTIFIER>:1.0.0
+kubectl expose deployment <PRODUCTS IDENTIFIER> --type=LoadBalancer --port 80 --target-port 8082
 
-fancy orders 34.122.230.159
-fancy products 34.134.162.63 
+kubectl get services
 
 #NOTE: Please make note of the IP address of both the Orders and Products services once they have been exposed, you will need them in future steps.
+----------------------------------------------------------------------------------------------------------
+
 
 #Task 5: Configure the Frontend microservice
-cd ~/monolith-to-microservices/react-app nano .env
+cd ~/monolith-to-microservices/react-app 
+nano .env
 
 #change with ur IP 
 http://ORDERS_EXTERNAL_IP/api/orders
-http://PRODUCTS_EXTERNAL_IP/api/products
+http://PRODUCTS_EXTERNAL_IP/api/products`
 #DONT FORGET TO SAVE 
 npm run build
+------------------------------------------------------------------
+
 
 #Task 6: Create a containerized version of the Frontend microservice
 #Make sure that you:
@@ -75,8 +87,10 @@ npm run build
 #with a version of 1.0.0.
 
 cd ~/monolith-to-microservices/microservices/src/frontend
-gcloud builds submit --tag gcr.io/${GOOGLE_CLOUD_PROJECT}/Frontend Identifier:1.0.0 .
+gcloud builds submit --tag gcr.io/${GOOGLE_CLOUD_PROJECT}/<Frontend Identifier>:1.0.0 .
+-----------------------------------------------------------------------------------------
+
 
 #Task 7: Deploy the Frontend microservice
-kubectl create deployment fancy-frontend-400 --image=gcr.io/${GOOGLE_CLOUD_PROJECT}/fancy-frontend-400:1.0.0
-kubectl expose deployment fancy-frontend-400 --type=LoadBalancer --port 80 --target-port 8080
+kubectl create deployment <FRONTEND IDENTIFIER> --image=gcr.io/${GOOGLE_CLOUD_PROJECT}/<FRONTEND IDENFITFIER>:1.0.0
+kubectl expose deployment <FRONTEND IDENTIFIER> --type=LoadBalancer --port 80 --target-port 8080
